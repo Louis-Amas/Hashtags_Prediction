@@ -53,3 +53,13 @@ python3 nocuda cleaned_corpus words_occurences path_to_save_models path_to_save_
 ```
 
 ## Predict hashtags
+> cuda
+
+```bash
+python3 src/predictHashtags.py model_path doc/vocab.json doc/vocabH.json text cuda
+```
+> nocuda
+
+```bash
+python3 src/predictHashtags.py model_path doc/vocab.json doc/vocabH.json text nocuda
+```
