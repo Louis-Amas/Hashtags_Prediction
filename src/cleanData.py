@@ -27,5 +27,5 @@ if __name__ == '__main__':
         json_obj['text'] = re.sub('@[^\ \t\n"]+', '', json_obj['text'])
         json_obj['text'] = re.sub('https[^\ \t\n"]+', '', json_obj['text'])
         json_obj['text'] = re.sub('#[^\ \t\n"]+', '', json_obj['text'])
-        json_obj['text'] = json_obj['text'].replace('"rt', '"')
+        json_obj['text'] = json_obj['text'].replace('rt ', '')
         fi.write(json.dumps(json_obj) + '\n')
