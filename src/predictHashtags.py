@@ -13,7 +13,7 @@ def getHashtags(predict):
     #return rev_vocabh[torch.argmax(predict,1).item()]
 
 
-def transformText(text, seqLen, vocab):
+def transformText(text, seqLen, vocab, cuda):
     textInInt = np.zeros((1, seqLen))
     words = text.split()
     for i in range(0, seqLen):
@@ -24,17 +24,26 @@ def transformText(text, seqLen, vocab):
                 textInInt[0][i] = vocab[words[i]]
         else:
             textInInt[0][i] = vocab['<eos>']
-    return torch.LongTensor(textInInt)
+    if cuda:
+        tensor = torch.LongTensor(textInInt).cuda()
+    else:
+        tensor = torch.LongTensor(textInInt)
+    return tensor
 
 if __name__ == '__main__':
-    if len(argv) < 5:
-        print(argv[0], ' path_to_model path_vocab path_vocabh tweet_text')
+    if len(argv) < 6:
+        print(argv[0], 'path_to_model path_vocab path_vocabh tweet_text cuda')
         exit(1)
 
     modelPath = argv[1]
     vocabPath = argv[2]
     vocabHPath = argv[3]
     tweet_text = argv[4].lower()
+    if argv[5] == 'cuda':
+        cuda = True
+    else:
+        cuda = False
+
     seqLen = 15
 
     with open(vocabPath, 'r') as f:
@@ -45,14 +54,14 @@ if __name__ == '__main__':
     rev_vocab = {vocab[key]: key  for key in vocab }
     rev_vocabh = {vocabH[key]: key  for key in vocabH }
 
-
-    model = torch.load(modelPath)
+    if cuda:
+        torch.load(modelPath, map_location={'cuda:0': 'cpu'})
+    else:
+        model = torch.load(modelPath)
 
 
     print('X:', tweet_text)
-    text_vec = transformText(tweet_text, seqLen, vocab)
+    text_vec = transformText(tweet_text, seqLen, vocab, cuda)
     text_vec.reshape([1, seqLen])
-
     bo = model.forward(text_vec)
-
     getHashtags(bo)

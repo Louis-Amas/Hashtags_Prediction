@@ -18,6 +18,10 @@ def process(status):
 
 
 if __name__ == '__main__':
+    '''
+        Extract json object from big file composed by json obj separated by '\n'
+
+    '''
     if len(argv) < 2:
         print(argv[0], ' files.json n.json')
         exit(1)
@@ -37,6 +41,3 @@ if __name__ == '__main__':
                 with open(out_file , 'a+') as fOut:
                     for tweet in list_tweet:
                         fOut.write(json.dumps(tweet) + '\n')
-
-
-
