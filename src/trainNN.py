@@ -95,7 +95,7 @@ def train(model, epochs, cuda, model_save_path, quiet=False):
     # Selection de la fonction de coût
     criterion = nn.CrossEntropyLoss()
     # Selection de l'optimisateur ici SGD (Gradient Descent)
-    optim = torch.optim.SGD(model.parameters(), lr=0.01)
+    optim = torch.optim.SGD(model.parameters(), lr=0.001)
     # Pour le nombre d'epoch spécifié faire
 
     for epoch in range(epochs):
