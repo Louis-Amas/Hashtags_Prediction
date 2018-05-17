@@ -26,11 +26,12 @@ cat data/corpus/x* > corpus.json
 ```
 
 ## How to clean data ?
+
 ```bash
 ./cleanStep.sh path_to_corpus path_to_cleaned_corpus
 ```
 
-## How to train model ?
+## How to train model ?
 
 #### Dependencies
   * pyTorch (4.0.0)
