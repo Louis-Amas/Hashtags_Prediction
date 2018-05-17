@@ -9,8 +9,11 @@
 ## Dataset description:
 
 The dataset is compose of more than 2M tweets.
+```
+Tweets are json object separated by '\n'
+```
 
-###Data look like
+### Data look like
 ```json
 {"text": "The Evolution of the             https://t.co/frtmvBHIFdUtarSystems", "hashtags": ["IoT", "BigData", "DataScience", "Chatbot", "9and9", "Fintech", "Insurtech", "AI", "VR", "AR", "Startup"]}
 {"text": "Follow the tips bellow and you could be on your way to win 20k monthly cc  @HHappyfish @busolaholloway  https://t.co/pxiGlNaJ44", "hashtags": ["OnlineHype"]}
