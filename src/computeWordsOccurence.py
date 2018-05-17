@@ -32,7 +32,7 @@ if __name__ == '__main__':
         Compute n most common hashtags
     """
     if len(argv) < 3:
-        print(argv[0], ' hmWords file.json newFile.json')
+        print(argv[0], ' hmWords file.json dic.json')
         exit(1)
 
     max_words = int(argv[1])
