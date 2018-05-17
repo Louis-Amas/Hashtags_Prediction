@@ -24,11 +24,7 @@ def transformText(text, seqLen, vocab, cuda):
                 textInInt[0][i] = vocab[words[i]]
         else:
             textInInt[0][i] = vocab['<eos>']
-    if cuda:
-        tensor = torch.LongTensor(textInInt).cuda()
-    else:
-        tensor = torch.LongTensor(textInInt)
-    return tensor
+    return torch.LongTensor(textInInt)
 
 if __name__ == '__main__':
     if len(argv) < 6:
