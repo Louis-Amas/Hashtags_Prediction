@@ -122,9 +122,10 @@ def train(model, epochs, cuda, model_save_path, quiet=False):
             correct += torch.sum(y_pred.data == y).item()
             total_loss += loss.data.item()
             num += len(y)
-            if not quiet and cpt % 10000 == 0:
-                print('Epoch: ', epoch, ' ', num, ' / ', len(X_train), line)
             cpt += 1
+            if not quiet and cpt % 100 == 0:
+                print('Epoch: ', epoch, ' ', num, ' / ', len(X_train), line)
+
 
         print('Epoch: ', epoch)
         print('Total loss train:', total_loss / num, '\nCorrect train: ', correct / len(X_train))
