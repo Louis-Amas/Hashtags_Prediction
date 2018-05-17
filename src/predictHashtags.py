@@ -13,7 +13,7 @@ def getHashtags(predict):
     #return rev_vocabh[torch.argmax(predict,1).item()]
 
 
-def transformText(text, seqLen, vocab, cuda):
+def transformText(text, seqLen, vocab):
     textInInt = np.zeros((1, seqLen))
     words = text.split()
     for i in range(0, seqLen):
@@ -57,7 +57,7 @@ if __name__ == '__main__':
 
 
     print('X:', tweet_text)
-    text_vec = transformText(tweet_text, seqLen, vocab, cuda)
+    text_vec = transformText(tweet_text, seqLen, vocab)
     text_vec.reshape([1, seqLen])
     bo = model.forward(text_vec)
     getHashtags(bo)
