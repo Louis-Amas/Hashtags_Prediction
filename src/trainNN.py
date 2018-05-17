@@ -107,7 +107,7 @@ def train(model, epochs, cuda, model_save_path, quiet=False):
         for X, y in train_loader:
             if cuda:
                 y_scores = model(Variable(X).cuda())
-                loss = criterion(y_scores, able(y).cuda())
+                loss = criterion(y_scores, Variable(y).cuda())
             else:
                 # Fait une prédiction (forward)
                 y_scores = model(Variable(X))
