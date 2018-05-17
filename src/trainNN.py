@@ -107,7 +107,7 @@ def train(model, epochs, cuda, model_save_path, quiet=False):
         for X, y in train_loader:
             if cuda:
                 y_scores = model(Variable(X).cuda())
-                loss = criterion(y_scores, Variable(y).cuda())
+                loss = criterion(y_scores, able(y).cuda())
             else:
                 # Fait une prédiction (forward)
                 y_scores = model(Variable(X))
@@ -193,9 +193,12 @@ if __name__ == '__main__':
 
     print ('Create training and test samples')
     Y = Y.reshape((Y.shape[0]))
-
-    X = torch.LongTensor(X)
-    Y = torch.LongTensor(Y)
+    if cuda:
+        X = torch.LongTensor(X).cuda()
+        Y = torch.LongTensor(Y).cuda()
+    else:
+        X = torch.LongTensor(X)
+        Y = torch.LongTensor(Y)
 
     X_train = X[:train_size]
     Y_train = Y[:train_size]
