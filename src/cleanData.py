@@ -20,7 +20,7 @@ if __name__ == '__main__':
     fi = open(argv[2], 'w')
     for line in fic.readlines():
         json_obj = json.loads(line)
-        if len(json_obj['text'].split()) < 3:
+        if len(json_obj['text'].split()) < 4:
             continue
         if not do_add(texts_set, json_obj['text']):
             continue

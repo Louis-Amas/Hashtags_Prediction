@@ -30,7 +30,8 @@ def saveOnlySelectedTweet(scores, list_tweets, save_path, min_hashtags=200):
     """
     with open(save_path, 'w') as fOut:
         for i, tweet in enumerate(list_tweets):
-            if not scores[tweet['hashtags'][0]] > min_hashtags:
+            score = scores[tweet['hashtags'][0]]
+            if  score < min_hashtags or score > max_hashtags:
                 continue
             fOut.write(json.dumps(tweet) + '\n')
 

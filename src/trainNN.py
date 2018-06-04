@@ -95,7 +95,7 @@ def train(model, epochs, cuda, model_save_path, quiet=False):
     # Selection de la fonction de coût
     criterion = nn.CrossEntropyLoss()
     # Selection de l'optimisateur ici SGD (Gradient Descent)
-    optim = torch.optim.SGD(model.parameters(), lr=0.001)
+    optim = torch.optim.SGD(model.parameters(), lr=0.0001)
     # Pour le nombre d'epoch spécifié faire
 
     for epoch in range(epochs):
@@ -122,9 +122,10 @@ def train(model, epochs, cuda, model_save_path, quiet=False):
             correct += torch.sum(y_pred.data == y).item()
             total_loss += loss.data.item()
             num += len(y)
-            cpt += 1
+
             if not quiet and cpt % 100 == 0:
                 print('Epoch: ', epoch, ' ', num, ' / ', len(X_train), line)
+            cpt += 1
 
 
         print('Epoch: ', epoch)
@@ -147,6 +148,19 @@ class RNN(nn.Module):
         output, hidden = self.rnn(embed)
         cur = self.decision(hidden.transpose(0, 1).contiguous().view(x.size(0), -1))
         return cur
+
+class CNN(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.embed = nn.Embedding(len(vocab_to_int), embed_size)
+        self.conv = nn.Conv1d(embed_size, hidden_size, kernel_size=2)
+        self.decision = nn.Linear(hidden_size, len(rev_hashtags_vocab_to_int))
+
+    def forward(self, x):
+        embed = self.embed(x)
+        conv = F.relu(self.conv(embed.transpose(1,2)))
+        pool = F.max_pool1d(conv, conv.size(2))
+        return self.decision(pool.view(x.size(0), -1))
 
 
 if __name__ == '__main__':
@@ -211,9 +225,9 @@ if __name__ == '__main__':
     train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=True)
     valid_loader = DataLoader(valid_set, batch_size=batch_size)
     if cuda:
-        model = RNN().cuda()
+        model = CNN().cuda()
     else:
-        model = RNN()
+        model = CNN()
 
     print('Start training...')
     train(model, 10, cuda, model_save_path)

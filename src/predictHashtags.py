@@ -3,6 +3,7 @@ import json
 from sys import argv
 import numpy as np
 from trainNN import RNN
+from trainNN import CNN
 
 
 def getHashtags(predict):
@@ -51,7 +52,7 @@ if __name__ == '__main__':
     rev_vocabh = {vocabH[key]: key  for key in vocabH }
 
     if cuda:
-        torch.load(modelPath, map_location={'cuda:0': 'cpu'})
+        model = torch.load(modelPath, map_location={'cuda:0': 'cpu'})
     else:
         model = torch.load(modelPath)
 
