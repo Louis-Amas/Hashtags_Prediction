@@ -28,18 +28,16 @@ def transformText(text, seqLen, vocab):
     return torch.LongTensor(textInInt)
 
 if __name__ == '__main__':
-    if len(argv) < 6:
-        print(argv[0], 'path_to_model path_vocab path_vocabh tweet_text cuda')
+    if len(argv) < 5:
+        print(argv[0], 'path_to_model path_vocab path_vocabh tweet_text')
         exit(1)
 
     modelPath = argv[1]
     vocabPath = argv[2]
     vocabHPath = argv[3]
     tweet_text = argv[4].lower()
-    if argv[5] == 'cuda':
-        cuda = True
-    else:
-        cuda = False
+
+    cuda = torch.cuda.is_available()
 
     seqLen = 15
 

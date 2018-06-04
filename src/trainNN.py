@@ -95,7 +95,7 @@ def train(model, epochs, cuda, model_save_path, quiet=False):
     # Selection de la fonction de coût
     criterion = nn.CrossEntropyLoss()
     # Selection de l'optimisateur ici SGD (Gradient Descent)
-    optim = torch.optim.SGD(model.parameters(), lr=0.0001)
+    optim = torch.optim.Adagrad(model.parameters(), lr=0.01)
     # Pour le nombre d'epoch spécifié faire
 
     for epoch in range(epochs):
@@ -139,8 +139,8 @@ class RNN(nn.Module):
     def __init__(self):
         super().__init__()
         self.embed = nn.Embedding(len(vocab_to_int), embed_size)
-        self.rnn = nn.GRU(embed_size, hidden_size, num_layers=1, dropout=0.0, bidirectional=False, batch_first=True)
-        self.decision = nn.Linear(hidden_size * 1 * 1, len(rev_hashtags_vocab_to_int))
+        self.rnn = nn.GRU(embed_size, hidden_size, num_layers=1, dropout=0.0, bidirectional=True, batch_first=True)
+        self.decision = nn.Linear(hidden_size * 2 * 1, len(rev_hashtags_vocab_to_int))
         #self.activation = nn.Softmax()
 
     def forward(self, x):
@@ -164,14 +164,12 @@ class CNN(nn.Module):
 
 
 if __name__ == '__main__':
-    if len(argv) < 6:
-        print(argv[0], ' cuda cleaned_corpus words_occurences path_to_save_models path_to_save_vocab')
+    if len(argv) < 5:
+        print(argv[0], 'cleaned_corpus words_occurences path_to_save_models path_to_save_vocab')
         exit(1)
 
-    if argv[1] == 'cuda':
-        cuda = True
-    else:
-        cuda = False
+    cuda = torch.cuda.is_available()
+
 
     input_seq_size = 10
     embed_size = 128
@@ -179,12 +177,12 @@ if __name__ == '__main__':
     hidden_size = 130
     batch_size = 100
     print('Loading data...')
-    hashtags_by_text, texts = read_data(argv[2])
+    hashtags_by_text, texts = read_data(argv[1])
 
-    model_save_path = argv[4]
-    doc_save_path = argv[5]
+    model_save_path = argv[3]
+    doc_save_path = argv[4]
 
-    with open(argv[3]) as f:
+    with open(argv[2]) as f:
         authorized_words = json.loads(f.read())
 
     print('Format features...')
@@ -225,9 +223,9 @@ if __name__ == '__main__':
     train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=True)
     valid_loader = DataLoader(valid_set, batch_size=batch_size)
     if cuda:
-        model = CNN().cuda()
+        model = RNN().cuda()
     else:
-        model = CNN()
+        model = RNN()
 
     print('Start training...')
     train(model, 10, cuda, model_save_path)
