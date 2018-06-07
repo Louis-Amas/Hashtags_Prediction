@@ -2,43 +2,29 @@ import torch
 import json
 from sys import argv
 import numpy as np
-from trainNN import RNN
-from trainNN import CNN
+from trainNN import RNN3
+
+from trainNN import transform_text
 
 
-def getHashtags(predict):
+
+def getHashtags(predict, rev_vocabh):
     pre = predict.detach().cpu().numpy()
     bestHashtags = pre.argsort()[-3:][::-1]
-    for i in range(len(bestHashtags[0]) - 3, len(bestHashtags[0])):
-      print('Preds ', ':', rev_vocabh[bestHashtags[0][i]])
-    #return rev_vocabh[torch.argmax(predict,1).item()]
+    preds = []
+    for i in range(0, 3):
+      preds.append(rev_vocabh[bestHashtags[i]])
 
+    return preds
 
-def transformText(text, seqLen, vocab):
-    textInInt = np.zeros((1, seqLen))
-    words = text.split()
-    for i in range(0, seqLen):
-        if i <= len(words) - 1:
-            if words[i] not in vocab.keys():
-                textInInt[0][i] = vocab['<UNK>']
-            else:
-                textInInt[0][i] = vocab[words[i]]
-        else:
-            textInInt[0][i] = vocab['<eos>']
-    return torch.LongTensor(textInInt)
+def printPreds(text, preds):
+    print('X:', text + '\n' + '-' * 30)
+    for pred in preds:
+        print(pred)
+    print('')
 
-if __name__ == '__main__':
-    if len(argv) < 5:
-        print(argv[0], 'path_to_model path_vocab path_vocabh tweet_text')
-        exit(1)
-
-    modelPath = argv[1]
-    vocabPath = argv[2]
-    vocabHPath = argv[3]
-    tweet_text = argv[4].lower()
-
+def predict(modelPath, vocabPath, vocabHPath, tweets_text, authorized_words):
     cuda = torch.cuda.is_available()
-
     seqLen = 15
 
     with open(vocabPath, 'r') as f:
@@ -54,9 +40,26 @@ if __name__ == '__main__':
     else:
         model = torch.load(modelPath)
 
+    texts_vec = torch.LongTensor(transform_text(tweets_text, seqLen, vocab, authorized_words))
+    bo = model.forward(texts_vec)
+    texts_preds = []
+    for i in range(bo.shape[0]):
+        texts_preds.append(getHashtags(bo[i], rev_vocabh))
+    return texts_preds
+        
 
-    print('X:', tweet_text)
-    text_vec = transformText(tweet_text, seqLen, vocab)
-    text_vec.reshape([1, seqLen])
-    bo = model.forward(text_vec)
-    getHashtags(bo)
+
+if __name__ == '__main__':
+    if len(argv) < 6:
+        print(argv[0], 'path_to_model path_vocab path_vocabh tweet_text wordoc')
+        exit(1)
+
+    modelPath = argv[1]
+    vocabPath = argv[2]
+    vocabHPath = argv[3]
+    with open(argv[4]) as f:
+        authorized_words = json.loads(f.read())
+    tweets_text = argv[5:]
+    texts_preds = predict(modelPath, vocabPath, vocabHPath, tweets_text, authorized_words)
+    for i, preds in enumerate(texts_preds):
+        printPreds(tweets_text[i], preds)
