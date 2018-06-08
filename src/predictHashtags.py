@@ -1,9 +1,8 @@
 import torch
 import json
 from sys import argv
-import numpy as np
-from trainNN import RNN3
 
+from trainNN import RNN3
 from trainNN import transform_text
 
 
@@ -22,6 +21,7 @@ def printPreds(text, preds):
     for pred in preds:
         print(pred)
     print('')
+
 
 def predict(modelPath, vocabPath, vocabHPath, tweets_text, authorized_words):
     cuda = torch.cuda.is_available()
@@ -59,6 +59,8 @@ if __name__ == '__main__':
     vocabHPath = argv[3]
     with open(argv[4]) as f:
         authorized_words = json.loads(f.read())
+
+
     tweets_text = argv[5:]
     texts_preds = predict(modelPath, vocabPath, vocabHPath, tweets_text, authorized_words)
     for i, preds in enumerate(texts_preds):

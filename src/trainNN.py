@@ -95,7 +95,7 @@ def train(model, epochs, cuda, model_save_path, quiet=False):
     for epoch in range(epochs):
         
         if epoch > 15:
-            learning_rate = 0.00001
+            learning_rate = 0.0001
         elif epoch >= 10:
             learning_rate = 0.0001
         else:
@@ -152,8 +152,6 @@ class RNN3(nn.Module):
         return cur
 
 
-
-
 if __name__ == '__main__':
     if len(argv) < 5:
         print(argv[0], 'cleaned_corpus words_occurences path_to_save_models path_to_save_vocab')
@@ -185,7 +183,6 @@ if __name__ == '__main__':
 
     print('Format targets...')
     Y, hashtags_vocab_to_int, rev_hashtags_vocab_to_int = getLabels(hashtags_by_text)
-
 
     with open(doc_save_path + '/vocabH.json', 'w') as f:
         f.write(json.dumps(hashtags_vocab_to_int))
@@ -219,4 +216,4 @@ if __name__ == '__main__':
         model = RNN3()
 
     print('Start training...\n')
-    train(model, 25, cuda, model_save_path)
+    train(model, 100, cuda, model_save_path)
