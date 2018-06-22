@@ -3,7 +3,7 @@
 ## Features
   * Cleaning dataset
   * Extract dataset from large stream file
-  * Train a DNN neural network (model)
+  * Train CNN, RNN, RNN+CNN, neural network (models)
   * Predict hashtags with trained models
 
 ## Dataset description:
@@ -41,25 +41,20 @@ cat data/corpus/x* > corpus.json
 python3 path_to_corpus path_to_words_occurences_dic
 ```
 #### Train models
-> cuda
 
 ```bash
-python3 cuda cleaned_corpus words_occurences path_to_save_models path_to_save_vocab
-```
-> no cuda
-
-```bash
-python3 nocuda cleaned_corpus words_occurences path_to_save_models path_to_save_vocab
+python3  cleaned_corpus words_occurences path_to_save_models path_to_save_vocab
 ```
 
 ## Predict hashtags
-> cuda
 
 ```bash
-python3 src/predictHashtags.py model_path doc/vocab.json doc/vocabH.json text cuda
+python3 src/predictHashtags.py model_path doc/vocab.json doc/vocabH.json text
 ```
-> nocuda
 
+## Web api
 ```bash
-python3 src/predictHashtags.py model_path doc/vocab.json doc/vocabH.json text nocuda
+python3 src/server.py [port]
 ```
+
+### Request

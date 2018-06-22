@@ -2,6 +2,7 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 import json
 from os import listdir
 from predictHashtags import predict
+from sys import argv
 from trainNN import RNN3
 
 
@@ -15,6 +16,15 @@ class Handler(BaseHTTPRequestHandler):
         try:
             texts = data['texts']
             preds = predict('../models/mod3.mod', '../doc/vocab.json', '../doc/vocabH.json', texts, '../doc/wordoc')
+            self.wfile.write(json.dumps(preds).encode('utf8'))
+        except KeyError:
+            self.send_error(25, 'Wrong json format')
+
+    def predict_hashtags_get(self):
+
+        try:
+            text = self.path.split('/')[2]
+            preds = predict('../models/mod3.mod', '../doc/vocab.json', '../doc/vocabH.json', [text], '../doc/wordoc')
             self.wfile.write(json.dumps(preds).encode('utf8'))
         except KeyError:
             self.send_error(25, 'Wrong json format')
@@ -53,4 +63,9 @@ def run(server_c=HTTPServer, handler=Handler, port=8080):
     httpd.serve_forever()
 
 
-run()
+if __name__ == '__main__':
+    if len(argv) < 2:
+        exit(1)
+
+    run(port=int(argv[1]))
+
